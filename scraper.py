@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 from time import sleep
-
+from csv import DictWriter
 
 # url = "http://quotes.toscrape.com"
 # response = requests.get(url).text
@@ -43,6 +43,7 @@ def fetch_quotes():
             next_page_url = soup.select('.next')[0].select('a')[0]['href']
             sleep(1)
             # method to suspend execution of a program for 1 second
+            # good practice for web scraping
         except IndexError:
             next_page_url = None
     return arr
@@ -50,3 +51,15 @@ def fetch_quotes():
 my_arr = fetch_quotes()
 print(my_arr)
 
+# export results to csv
+
+def write_quotes(all_quotes):
+    with open("quotes.csv", "w") as file:
+        headers = ['quote', 'author']
+        csv_writer = DictWriter(file, fieldnames=headers)
+        csv_writer.writeheader()
+        for quote in all_quotes:
+            csv_writer.writerow(quote)
+
+all_quotes = fetch_quotes()
+write_quotes(all_quotes)
